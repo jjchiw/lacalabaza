@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
   # Rebuilds the site so new Hollo posts and replies appear (each run is a deploy).
   schedule:
-    - cron: "23 */6 * * *"
+    - cron: '23 */6 * * *'
 
 # One deploy at a time; a running deploy is never cancelled.
 concurrency:
@@ -19,7 +19,7 @@ jobs:
     permissions:
       contents: read
       packages: write
-      id-token: write   # the run proves who it is to Bella Baxter with GitHub's OIDC token
+      id-token: write # the run proves who it is to Bella Baxter with GitHub's OIDC token
     steps:
       - uses: actions/checkout@v7
 
@@ -33,7 +33,7 @@ jobs:
       - name: Sign in to Bella Baxter
         uses: Cosmic-Chimps/bella-baxter-setup-action@v0.1.1-preview.139
         with:
-          oidc: "true"
+          oidc: 'true'
           tenant: code4fun-17d1c3
           project: lacalabaza
           environment: production
@@ -80,9 +80,10 @@ jobs:
         with:
           url: https://caravana.lacalabaza.xyz
           token: ${{ env.CARAVANA_TOKEN }}
-          app: lacalabaza
+          app: default--staging--lacalabaza
           definition: deploy/caravana-app.json
           image: ${{ env.IMAGE }}@${{ steps.build.outputs.digest }}
+          promote: production
 
   # Keeps the newest 10 tagged image versions and deletes the rest, plus untagged
   # versions older than a week that no kept image uses (the scheduled rebuilds
@@ -99,6 +100,6 @@ jobs:
       - name: Delete old image versions
         env:
           GH_TOKEN: ${{ github.token }}
-          KEEP: "10"
-          UNTAGGED_DAYS: "7"
+          KEEP: '10'
+          UNTAGGED_DAYS: '7'
         run: .github/scripts/prune-images.sh
