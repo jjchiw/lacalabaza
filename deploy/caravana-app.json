@@ -1,0 +1,15 @@
+{
+  "id": "lacalabaza",
+  "name": "lacalabaza",
+  "source": { "kind": "image" },
+  "services": [
+    {
+      "name": "web",
+      "image": "ghcr.io/cosmic-chimps/lacalabaza:latest",
+      "ports": [{ "name": "http", "containerPort": 80 }],
+      "domains": [{ "host": "lacalabaza.xyz", "port": "http" }],
+      "health": { "path": "/healthz", "port": "http" },
+      "resources": { "memoryMB": 64, "memoryMaxMB": 128 }
+    }
+  ]
+}

@@ -1,0 +1,49 @@
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# One deploy at a time; a running deploy is never cancelled.
+concurrency:
+  group: deploy
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v7
+
+      # github.repository is Cosmic-Chimps/lacalabaza; ghcr.io wants lowercase names.
+      - name: Set the lowercase image name
+        run: echo "IMAGE=ghcr.io/${GITHUB_REPOSITORY,,}" >> "$GITHUB_ENV"
+
+      - uses: docker/login-action@v4
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push the image
+        id: build
+        uses: docker/build-push-action@v7
+        with:
+          context: .
+          push: true
+          tags: |
+            ${{ env.IMAGE }}:${{ github.sha }}
+            ${{ env.IMAGE }}:latest
+
+      - name: Deploy to Caravana
+        uses: Cosmic-Chimps/caravana-action@v1
+        with:
+          url: https://caravana.lacalabaza.xyz
+          token: ${{ secrets.CARAVANA_TOKEN }}
+          app: lacalabaza
+          definition: deploy/caravana-app.json
+          image: ${{ env.IMAGE }}@${{ steps.build.outputs.digest }}
