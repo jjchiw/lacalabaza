@@ -20,7 +20,6 @@ export default {
     text: 'Trying to write more often than once every thirteen years.',
     updated: '2026-10-19',
   },
-  now: {},
   make: [
     {
       name: 'Bella Baxter',
