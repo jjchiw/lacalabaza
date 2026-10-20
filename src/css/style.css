@@ -66,6 +66,9 @@ nav.main a:hover { color: var(--fg); }
   display: grid; gap: 40px; padding-top: 36px;
   grid-template-columns: 1fr;
 }
+@media (max-width: 719.98px) {
+  .cols > .posts { order: -1; }
+}
 @media (min-width: 720px) {
   .cols { grid-template-columns: minmax(0, 1fr) 15rem; }
   .cols > .lab { grid-column: 1; grid-row: 2; }
