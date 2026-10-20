@@ -126,6 +126,12 @@ Every push to `main` runs `.github/workflows/deploy.yml`: build the image, push 
    public (GitHub › Packages › lacalabaza › Package settings › Change visibility), or add ghcr.io
    credentials in Caravana's Settings › Registries.
 
+After a successful deploy, a `prune` job keeps the newest 10 tagged image versions on ghcr.io and
+deletes the rest, plus untagged versions older than a week that no kept image uses (each scheduled
+rebuild of the same commit leaves one behind). `.github/scripts/prune-images.sh` does it; run it
+locally with `DRY_RUN=1 OWNER=Cosmic-Chimps .github/scripts/prune-images.sh` to see what it would
+delete (needs `gh`, `jq` and `docker buildx`).
+
 `deploy/caravana-app.json` is the app's definition (one service `web`, nginx on port 80, the domain
 `lacalabaza.xyz`, health check `/healthz`, 64 MB reserved and up to 128 MB). The action uses it only
 when the app doesn't exist yet or has no definition, so changes made to the app in the Caravana

@@ -83,3 +83,22 @@ jobs:
           app: lacalabaza
           definition: deploy/caravana-app.json
           image: ${{ env.IMAGE }}@${{ steps.build.outputs.digest }}
+
+  # Keeps the newest 10 tagged image versions and deletes the rest, plus untagged
+  # versions older than a week that no kept image uses (the scheduled rebuilds
+  # leave one behind each time). Runs only after a deploy that succeeded, so a
+  # failed rollout keeps every image it might fall back to.
+  prune:
+    needs: deploy
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v7
+      - name: Delete old image versions
+        env:
+          GH_TOKEN: ${{ github.token }}
+          KEEP: "10"
+          UNTAGGED_DAYS: "7"
+        run: .github/scripts/prune-images.sh
