@@ -4,9 +4,13 @@ export default {
   author: "jjchiw",
   repo: "https://github.com/Cosmic-Chimps/lacalabaza",
   contactEmail: "jjchiw@cosmic-chimps.com",
-  // The fediverse profile URL, e.g. https://<host>/@jjchiw. Empty until it is known:
-  // while empty, no Hollo link, no "Reply" link and no fediverse line are drawn.
-  hollo: "",
+  // The fediverse profile URL. While empty, no Hollo link, no "Reply" link and no
+  // Replies section are drawn.
+  hollo: "https://social.lacalabaza.xyz/@jjchiw",
+  // The Hollo instance, for the Mastodon API calls that fetch replies at build time.
+  // HOLLO_API overrides it (a developer knob: point it at a fake server in a test).
+  holloApi: process.env.HOLLO_API || "https://social.lacalabaza.xyz",
+  holloHandle: "@jjchiw@social.lacalabaza.xyz",
   // The X profile URL. Empty until it is known.
   x: "",
   github: "https://github.com/Cosmic-Chimps",

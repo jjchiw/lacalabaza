@@ -57,6 +57,18 @@ layout: layouts/base.njk
           <li><span class="k">Email</span><span class="h"><a href="mailto:{{ site.contactEmail }}">{{ site.contactEmail }}</a></span></li>
         </ul>
       </section>
+
+      {%- if hollo and hollo.length %}
+      <section class="sec">
+        <div class="label"><span>Latest from Hollo</span><a href="{{ site.hollo }}">more</a></div>
+        {%- for toot in hollo %}
+        <div class="toot">
+          {{ toot.content | safe }}
+          <div class="meta"><a href="{{ site.hollo }}">@{{ site.author }}</a><a href="{{ toot.url }}"><time datetime="{{ toot.published }}">{{ toot.published | dateFormat("en") }}</time></a></div>
+        </div>
+        {%- endfor %}
+      </section>
+      {%- endif %}
     </aside>
 
   </div>
