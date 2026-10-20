@@ -31,14 +31,36 @@ layout: layouts/base.njk
         <section class="sec">
           <div class="label"><span>This post</span></div>
           <ul class="out-list">
-            {%- if site.hollo %}
-            <li><span class="k">Reply</span><span class="h"><a href="{{ site.hollo }}">on Hollo</a></span></li>
+            {%- if fediverse or site.hollo %}
+            <li><span class="k">Reply</span><span class="h"><a href="{{ fediverse or site.hollo }}">on Hollo</a></span></li>
             {%- endif %}
             <li><span class="k">Source</span><span class="h"><a href="{{ site.repo }}/blob/main/{{ page.inputPath | replace('./', '') }}">edit on GitHub</a></span></li>
           </ul>
         </section>
       </aside>
     </div>
+
+    {%- if site.hollo or fediverse %}
+    <section class="sec replies" id="replies" aria-label="Replies">
+      <div class="label"><span>Replies</span>{% if comments.length %}<span>{{ comments.length }} {{ "reply" if comments.length == 1 else "replies" }}</span>{% endif %}</div>
+      <p class="note">Replies go through the fediverse. <a href="{{ fediverse or site.hollo }}">Reply on Hollo</a></p>
+      {%- if comments.length %}
+      <ul class="reply-list">
+        {%- for c in comments %}
+        <li class="reply">
+          <div class="who">
+            {%- if c.author.avatar %}<img class="avatar" src="{{ c.author.avatar }}" width="28" height="28" loading="lazy" alt="">{% endif %}
+            <span class="name">{% if c.author.url %}<a href="{{ c.author.url }}" rel="nofollow noopener">{{ c.author.name }}</a>{% else %}{{ c.author.name }}{% endif %}</span>
+            <span class="acct">@{{ c.author.acct }}</span>
+            <a class="when" href="{{ c.url }}" rel="nofollow noopener"><time datetime="{{ c.createdAt }}">{{ c.createdAt | dateFormat(lang) }}</time></a>
+          </div>
+          <div class="body">{{ c.content | safe }}</div>
+        </li>
+        {%- endfor %}
+      </ul>
+      {%- endif %}
+    </section>
+    {%- endif %}
 
     <footer class="post-end">
       <nav class="pager" aria-label="Posts">
@@ -49,8 +71,5 @@ layout: layouts/base.njk
         <a href="{{ newer.url }}" class="next"><span class="dir">Newer →</span><span>{{ newer.data.title }}</span></a>
         {%- endif %}
       </nav>
-      {%- if site.hollo %}
-      <p class="reply">Replies go through the fediverse. Mention <a href="{{ site.hollo }}">@{{ site.author }}</a> on Hollo.</p>
-      {%- endif %}
     </footer>
   </article>

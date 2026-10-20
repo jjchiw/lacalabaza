@@ -38,9 +38,47 @@ The text, in Markdown. Each `##` heading gets an anchor and an entry in "On this
 - `updated` (optional, a date) adds an "updated" note to the post's header.
 - Avoid `{{` and `{%` in a post's text or code blocks: posts go through Nunjucks. Wrap such text in
   `{% raw %}...{% endraw %}`.
+- `fediverse` (optional, a URL) turns on the replies under the post: the URL of the Hollo toot that
+  announces it. Publish the post, post about it on Hollo, paste that toot's URL into `fediverse:`
+  (for example `https://social.lacalabaza.xyz/@jjchiw/<status id>`), and push again. See "Hollo" below.
 - Site-wide text and links (About, Now, Things I make, Elsewhere) live in `src/_data/site.js`. Fill in
-  `hollo` and `x` there when the profiles exist: until then those links, the "Reply" link and the
-  fediverse line are left out.
+  `x` there when the profile exists: until then that link is left out.
+
+## Hollo
+
+The site reads the fediverse account (`site.hollo`, `site.holloApi` and `site.holloHandle` in
+`src/_data/site.js`) at build time, in Node. There is still no JavaScript in the browser.
+
+- **Latest from Hollo** (home page, right column) shows the three newest top-level posts. It reads the
+  account's public ActivityPub outbox (`src/_data/hollo.js`), so it needs no token. The text goes
+  through `sanitize-html` with a small allowlist (paragraphs, links, emphasis, code, lists, quotes; no
+  images or styles).
+- **Replies** (under each post that sets `fediverse:`) are the replies to that toot, read with the
+  Mastodon API (`src/posts/posts.11tydata.js`). Hollo closes that API without a token, so this part
+  needs `HOLLO_TOKEN`. Replies are sanitized the same way. Each toot is fetched once per build.
+- `HOLLO_TOKEN` is optional. Without it the build still works: the latest posts appear, a post that
+  sets `fediverse:` shows only its "Reply on Hollo" link, and the build log says
+  `[hollo] HOLLO_TOKEN is not set: comments are not fetched` once. If Hollo is down, the build logs a
+  `[hollo]` warning and leaves the sections out; it never fails.
+
+To get a token: in Hollo's dashboard, create an application for the blog with the `read` and
+`write:statuses` scopes (`read` alone is enough for now) and copy its access token. The exact menu
+names may differ by Hollo version. Then add it to this repository as the GitHub secret `HOLLO_TOKEN`.
+The deploy workflow passes it to the image build as a BuildKit secret, so it is never stored in an
+image layer.
+
+The workflow also runs every 6 hours (`schedule` in `.github/workflows/deploy.yml`): it rebuilds and
+deploys so new Hollo posts and replies appear. A reply shows up at most 6 hours later, and every
+scheduled run is a deploy.
+
+For a local build with comments:
+
+```sh
+HOLLO_TOKEN=... npm run build
+```
+
+Developer knob: `HOLLO_API` overrides `site.holloApi` (default `https://social.lacalabaza.xyz`), for
+example to point the build at a fake server in a test.
 
 ## Build the image locally
 

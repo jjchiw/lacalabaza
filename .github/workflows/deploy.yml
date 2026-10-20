@@ -4,6 +4,9 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
+  # Rebuilds the site so new Hollo posts and replies appear (each run is a deploy).
+  schedule:
+    - cron: "23 */6 * * *"
 
 # One deploy at a time; a running deploy is never cancelled.
 concurrency:
@@ -38,6 +41,8 @@ jobs:
           tags: |
             ${{ env.IMAGE }}:${{ github.sha }}
             ${{ env.IMAGE }}:latest
+          secrets: |
+            hollo_token=${{ secrets.HOLLO_TOKEN }}
 
       - name: Deploy to Caravana
         uses: Cosmic-Chimps/caravana-action@v1
