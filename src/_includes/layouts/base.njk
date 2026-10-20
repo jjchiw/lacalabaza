@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>{% if title and page.url != "/" %}{{ title }} · {{ site.name }}{% else %}{{ site.name }}.xyz · {{ site.author }}{% endif %}</title>
+  <meta name="description" content="{{ description or site.about }}">
+  <link rel="canonical" href="{{ site.url }}{{ page.url }}">
+  <link rel="icon" type="image/png" href="/img/calabaza.png">
+  <link rel="alternate" type="application/atom+xml" title="{{ site.name }}, all posts" href="/feed.xml">
+  <link rel="alternate" type="application/atom+xml" title="{{ site.name }}, English" href="/en/feed.xml">
+  <link rel="alternate" type="application/atom+xml" title="{{ site.name }}, Español" href="/es/feed.xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=JetBrains+Mono:wght@400;500&display=swap">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <a class="mark" href="/"><img src="/img/calabaza.png" width="356" height="336" alt="a grinning pumpkin"><span>{{ site.name }}<span class="xyz">.xyz</span></span><small>{{ site.author }}'s lab</small></a>
+    <nav class="main" aria-label="Sections">
+      <a href="/#posts">Writing</a>
+      <a href="/#lab">The lab</a>
+      <a href="/#elsewhere">Elsewhere</a>
+      <a href="/feed.xml">RSS</a>
+    </nav>
+  </header>
+
+{{ content | safe }}
+
+  <footer class="bottom">
+    <span>Eleventy · hosted on Caravana · <a href="{{ site.repo }}">source</a></span>
+    <nav aria-label="Legal"><a href="/privacy/">Privacy policy</a><a href="/terms/">Terms of service</a></nav>
+    <span>{{ site.name }}.xyz · {{ site.author }} · 2013–{{ site.year }}</span>
+  </footer>
+</div>
+</body>
+</html>

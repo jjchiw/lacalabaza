@@ -1,0 +1,62 @@
+---
+layout: layouts/base.njk
+---
+{%- if homeLang == "en" %}{% set listPosts = collections.postsEn %}
+{%- elif homeLang == "es" %}{% set listPosts = collections.postsEs %}
+{%- else %}{% set listPosts = collections.posts %}{% endif %}
+  <div class="cols">
+
+    <aside class="col lab" id="lab" aria-label="About">
+      <section class="sec about">
+        <div class="label"><span>About</span></div>
+        <p>{{ site.about }}</p>
+      </section>
+
+      <section class="sec now">
+        <div class="label"><span>Now</span></div>
+        <p>{{ site.now.text }}</p>
+        <time datetime="{{ site.now.updated }}">updated {{ site.now.updated }}</time>
+      </section>
+
+      <section class="sec">
+        <div class="label"><span>Things I make</span></div>
+        <ul class="make-list">
+          {%- for item in site.make %}
+          <li>{% if item.url %}<a href="{{ item.url }}">{{ item.name }}</a>{% else %}<strong class="name">{{ item.name }}</strong>{% endif %}<span>{{ item.what }}</span></li>
+          {%- endfor %}
+        </ul>
+      </section>
+    </aside>
+
+    <main class="col posts" id="posts">
+      <section class="sec intro">
+        <h1>Notes from the <em>pumpkin</em>.</h1>
+        <p>What I'm building, in English. Everything else, en español.</p>
+      </section>
+
+      <section class="sec">
+        <div class="label"><span>Writing</span><nav class="langs" aria-label="Language"><a href="/"{% if homeLang == "all" %} aria-current="true"{% endif %}>All</a><a href="/en/"{% if homeLang == "en" %} aria-current="true"{% endif %}>English</a><a href="/es/"{% if homeLang == "es" %} aria-current="true"{% endif %}>Español</a></nav></div>
+        {% include "partials/post-list.njk" %}
+        <div class="posts-foot"><a href="/posts/">All posts →</a></div>
+      </section>
+    </main>
+
+    <aside class="col elsewhere" id="elsewhere" aria-label="Where else to find me">
+      <section class="sec">
+        <div class="label"><span>Elsewhere</span></div>
+        <ul class="out-list">
+          {%- if site.hollo %}
+          <li><span class="k"><a href="{{ site.hollo }}" rel="me">Hollo</a></span><span class="h">@{{ site.author }}</span></li>
+          {%- endif %}
+          {%- if site.github %}
+          <li><span class="k"><a href="{{ site.github }}" rel="me">GitHub</a></span><span class="h">Cosmic-Chimps</span></li>
+          {%- endif %}
+          {%- if site.x %}
+          <li><span class="k"><a href="{{ site.x }}" rel="me">X</a></span><span class="h">@{{ site.author }}</span></li>
+          {%- endif %}
+          <li><span class="k">Email</span><span class="h"><a href="mailto:{{ site.contactEmail }}">{{ site.contactEmail }}</a></span></li>
+        </ul>
+      </section>
+    </aside>
+
+  </div>

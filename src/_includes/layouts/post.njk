@@ -1,0 +1,56 @@
+---
+layout: layouts/base.njk
+---
+{%- set older = collections.posts | getNextCollectionItem(page) %}
+{%- set newer = collections.posts | getPreviousCollectionItem(page) %}
+{%- set toc = content | headings %}
+  <article lang="{{ lang }}">
+    <header class="post-head">
+      <div class="crumbs"><a href="/#posts">Writing</a><span>›</span><span>{{ page.date.getUTCFullYear() }}</span></div>
+      <h1>{{ title }}</h1>
+      <p class="stand">{{ description }}</p>
+      <div class="pmeta"><time datetime="{{ page.date | isoDate }}">{{ page.date | dateFormat(lang) }}</time><span class="lg">{{ lang }}</span><span>{{ content | readingTime(lang) }}</span>{% if tags %}<span>{% for tag in tags %}<span class="tag">{{ tag }}</span> {% endfor %}</span>{% endif %}{% if updated %}<span>{{ "updated" if lang == "en" else "actualizado" }} {{ updated | dateFormat(lang) }}</span>{% endif %}</div>
+    </header>
+
+    <div class="post-grid">
+      <div class="prose">
+{{ content | safe }}
+      </div>
+
+      <aside class="rail">
+        {%- if toc.length %}
+        <section class="sec toc">
+          <div class="label"><span>On this page</span></div>
+          <ol>
+            {%- for h in toc %}
+            <li><a href="#{{ h.id }}">{{ h.text }}</a></li>
+            {%- endfor %}
+          </ol>
+        </section>
+        {%- endif %}
+        <section class="sec">
+          <div class="label"><span>This post</span></div>
+          <ul class="out-list">
+            {%- if site.hollo %}
+            <li><span class="k">Reply</span><span class="h"><a href="{{ site.hollo }}">on Hollo</a></span></li>
+            {%- endif %}
+            <li><span class="k">Source</span><span class="h"><a href="{{ site.repo }}/blob/main/{{ page.inputPath | replace('./', '') }}">edit on GitHub</a></span></li>
+          </ul>
+        </section>
+      </aside>
+    </div>
+
+    <footer class="post-end">
+      <nav class="pager" aria-label="Posts">
+        {%- if older %}
+        <a href="{{ older.url }}" class="prev"><span class="dir">← Older</span><span>{{ older.data.title }}</span></a>
+        {%- endif %}
+        {%- if newer %}
+        <a href="{{ newer.url }}" class="next"><span class="dir">Newer →</span><span>{{ newer.data.title }}</span></a>
+        {%- endif %}
+      </nav>
+      {%- if site.hollo %}
+      <p class="reply">Replies go through the fediverse. Mention <a href="{{ site.hollo }}">@{{ site.author }}</a> on Hollo.</p>
+      {%- endif %}
+    </footer>
+  </article>
