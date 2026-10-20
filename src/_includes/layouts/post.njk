@@ -7,7 +7,7 @@ layout: layouts/base.njk
   <article lang="{{ lang }}">
     <header class="post-head">
       <div class="crumbs"><a href="/#posts">Writing</a><span>›</span><span>{{ page.date.getUTCFullYear() }}</span></div>
-      <h1>{{ title }}</h1>
+      <h1>{{ title }}{% if draft %} <span class="draft-mark">Draft</span>{% endif %}</h1>
       <p class="stand">{{ description }}</p>
       <div class="pmeta"><time datetime="{{ page.date | isoDate }}">{{ page.date | dateFormat(lang) }}</time><span class="lg">{{ lang }}</span><span>{{ content | readingTime(lang) }}</span>{% if tags %}<span>{% for tag in tags %}<span class="tag">{{ tag }}</span> {% endfor %}</span>{% endif %}{% if updated %}<span>{{ "updated" if lang == "en" else "actualizado" }} {{ updated | dateFormat(lang) }}</span>{% endif %}</div>
     </header>

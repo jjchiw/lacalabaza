@@ -37,13 +37,19 @@ export default function (eleventyConfig) {
     })
   );
 
+  // A post with `draft: true` is left out of a build entirely (no page, no
+  // collection, feed or pager entry) and kept when the site is served or watched.
+  eleventyConfig.addPreprocessor("drafts", "*", (data, content) => {
+    if (data.draft && process.env.ELEVENTY_RUN_MODE === "build") return false;
+  });
+
   eleventyConfig.addPassthroughCopy("src/css");
   eleventyConfig.addPassthroughCopy("src/img");
 
   // Posts, newest first. Templates reverse the order where they need to.
   const posts = (api) =>
     api
-      .getFilteredByGlob("src/posts/*.md")
+      .getFilteredByGlob("src/posts/**/*.md")
       .sort((a, b) => b.date - a.date || a.inputPath.localeCompare(b.inputPath));
   eleventyConfig.addCollection("posts", posts);
   eleventyConfig.addCollection("postsEn", (api) =>

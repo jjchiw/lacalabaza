@@ -244,3 +244,5 @@ a.mark:hover { text-decoration: none; }
 .reply .body > :first-child { margin-top: 0; }
 .reply .body > :last-child { margin-bottom: 0; }
 .reply .body p { margin: 0 0 0.8em; }
+
+.draft-mark { font-family: var(--mono); font-size: 11px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); vertical-align: middle; }

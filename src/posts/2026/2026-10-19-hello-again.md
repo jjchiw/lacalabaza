@@ -2,7 +2,6 @@
 layout: layouts/post.njk
 title: Hello again
 description: The site is back after thirteen years, built with Eleventy and hosted on my own server.
-date: 2026-10-19
 lang: en
 tags:
   - meta

@@ -44,6 +44,9 @@ async function fetchComments(id, token) {
 
 export default {
   eleventyComputed: {
+    // /posts/<year>/<slug>/ : the year and the slug come from the file name
+    // (yyyy-mm-dd-slug.md), through page.date and page.fileSlug.
+    permalink: (data) => `/posts/${data.page.date.getUTCFullYear()}/${data.page.fileSlug}/`,
     comments: async (data) => {
       if (!data.fediverse) return [];
       const token = process.env.HOLLO_TOKEN;

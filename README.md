@@ -17,15 +17,16 @@ Open the address Eleventy prints (usually http://localhost:8080/). `npm run buil
 
 ## Write a post
 
-Add a Markdown file to `src/posts/`. The file name is the URL: `src/posts/my-post.md` becomes
-`/posts/my-post/`.
+Add a Markdown file at `src/posts/<year>/yyyy-mm-dd-<slug>.md`. The file name carries both the date and
+the slug: `src/posts/2026/2026-10-19-hello-again.md` is published on 19 Oct 2026 at
+`/posts/2026/hello-again/`. Eleventy reads the date from the file name, so the front matter has no
+`date:`. The year folders are only for tidiness: the URL and the date come from the file name alone.
 
 ```markdown
 ---
 layout: layouts/post.njk
 title: The title
 description: One sentence, shown under the title and in the lists.
-date: 2026-10-19
 lang: en
 tags:
   - meta
@@ -35,6 +36,11 @@ The text, in Markdown. Each `##` heading gets an anchor and an entry in "On this
 
 - `lang` is `en` or `es`. It sets the `lang` of the post, the date format, the reading time wording,
   the language lists (`/en/`, `/es/`) and the feeds (`/feed.xml`, `/en/feed.xml`, `/es/feed.xml`).
+- `tags` is a list of short words shown under the title and in the lists.
+- `draft: true` (optional) keeps the post out of the site. `npm run dev` shows it, marked "Draft" in the
+  list and next to its title, so you can write it. `npm run build` leaves it out entirely: no page, and
+  no entry in a list, feed or pager. To publish it, remove that line (and rename the file if the date
+  changed).
 - `updated` (optional, a date) adds an "updated" note to the post's header.
 - Avoid `{{` and `{%` in a post's text or code blocks: posts go through Nunjucks. Wrap such text in
   `{% raw %}...{% endraw %}`.
