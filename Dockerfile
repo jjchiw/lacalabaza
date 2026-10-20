@@ -13,4 +13,3 @@ RUN apk upgrade --no-cache
 COPY --from=build /app/_site /usr/share/nginx/html
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 EXPOSE 80
-CMD ["sh", "-c", "echo 'broken on purpose for the Phase 2.5 gate'; exit 1"]
