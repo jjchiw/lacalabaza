@@ -19,12 +19,43 @@ jobs:
     permissions:
       contents: read
       packages: write
+      id-token: write   # the run proves who it is to Bella Baxter with GitHub's OIDC token
     steps:
       - uses: actions/checkout@v7
 
       # github.repository is Cosmic-Chimps/lacalabaza; ghcr.io wants lowercase names.
       - name: Set the lowercase image name
         run: echo "IMAGE=ghcr.io/${GITHUB_REPOSITORY,,}" >> "$GITHUB_ENV"
+
+      # Keyless: no secret lives in this repository. Bella Baxter trades the run's OIDC token for a
+      # 15-minute key (a Trust Domain on the environment says which repository and branch may), and
+      # `bella run` puts the environment's secrets in the command's environment.
+      - name: Sign in to Bella Baxter
+        uses: Cosmic-Chimps/bella-baxter-setup-action@v0.1.1-preview.139
+        with:
+          oidc: "true"
+          tenant: code4fun-17d1c3
+          project: lacalabaza
+          environment: production
+        env:
+          BELLA_BAXTER_URL: https://api.bella-baxter.io
+
+      - name: Read the deploy secrets
+        run: |
+          bella run -- sh -c '
+            if [ -z "$CARAVANA_TOKEN" ]; then
+              echo "::error::CARAVANA_TOKEN is not set in Bella Baxter (project lacalabaza, environment production)"
+              exit 1
+            fi
+            echo "::add-mask::$CARAVANA_TOKEN"
+            echo "CARAVANA_TOKEN=$CARAVANA_TOKEN" >> "$GITHUB_ENV"
+            if [ -n "$HOLLO_TOKEN" ]; then
+              echo "::add-mask::$HOLLO_TOKEN"
+              echo "HOLLO_TOKEN=$HOLLO_TOKEN" >> "$GITHUB_ENV"
+            else
+              echo "::notice::HOLLO_TOKEN is not set in Bella Baxter: the site is built without replies"
+            fi
+          '
 
       - uses: docker/login-action@v4
         with:
@@ -42,13 +73,13 @@ jobs:
             ${{ env.IMAGE }}:${{ github.sha }}
             ${{ env.IMAGE }}:latest
           secrets: |
-            hollo_token=${{ secrets.HOLLO_TOKEN }}
+            hollo_token=${{ env.HOLLO_TOKEN }}
 
       - name: Deploy to Caravana
         uses: Cosmic-Chimps/caravana-action@v1
         with:
           url: https://caravana.lacalabaza.xyz
-          token: ${{ secrets.CARAVANA_TOKEN }}
+          token: ${{ env.CARAVANA_TOKEN }}
           app: lacalabaza
           definition: deploy/caravana-app.json
           image: ${{ env.IMAGE }}@${{ steps.build.outputs.digest }}

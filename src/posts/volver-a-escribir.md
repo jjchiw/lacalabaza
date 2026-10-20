@@ -1,7 +1,7 @@
 ---
 layout: layouts/post.njk
 title: Volver a escribir, trece años después
-description: Lo que quedó del sitio de 2013 y qué cambia ahora que el servidor es mío.
+description: Lo que quedó del sitio de 2013.
 date: 2026-10-19
 lang: es
 tags:

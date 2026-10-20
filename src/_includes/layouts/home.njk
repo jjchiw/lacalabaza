@@ -19,7 +19,7 @@ layout: layouts/base.njk
       </section>
 
       <section class="sec">
-        <div class="label"><span>Things I make</span></div>
+        <div class="label"><span>Things I collaborate with</span></div>
         <ul class="make-list">
           {%- for item in site.make %}
           <li>{% if item.url %}<a href="{{ item.url }}">{{ item.name }}</a>{% else %}<strong class="name">{{ item.name }}</strong>{% endif %}<span>{{ item.what }}</span></li>
@@ -49,7 +49,7 @@ layout: layouts/base.njk
           <li><span class="k"><a href="{{ site.hollo }}" rel="me">Hollo</a></span><span class="h">@{{ site.author }}</span></li>
           {%- endif %}
           {%- if site.github %}
-          <li><span class="k"><a href="{{ site.github }}" rel="me">GitHub</a></span><span class="h">Cosmic-Chimps</span></li>
+          <li><span class="k"><a href="{{ site.github }}" rel="me">GitHub</a></span><span class="h">jjchiw</span></li>
           {%- endif %}
           {%- if site.x %}
           <li><span class="k"><a href="{{ site.x }}" rel="me">X</a></span><span class="h">@{{ site.author }}</span></li>

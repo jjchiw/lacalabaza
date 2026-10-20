@@ -6,11 +6,11 @@ date: 2026-10-19
 ---
 Last updated: {{ page.date | dateFormat("en") }}
 
-These terms cover lacalabaza.xyz and the services I run there, including Umbral, the single sign-on service.
+These terms cover lacalabaza.xyz and the services I run there.
 
 ## Personal services
 
-The services here are personal. They are run for me and for the people I choose to invite. They are not a public product, and having a Google account does not by itself give you access.
+The services here are personal. They are run for me and for the people I choose to invite.
 
 ## No promises
 

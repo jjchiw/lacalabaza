@@ -61,11 +61,26 @@ The site reads the fediverse account (`site.hollo`, `site.holloApi` and `site.ho
   `[hollo] HOLLO_TOKEN is not set: comments are not fetched` once. If Hollo is down, the build logs a
   `[hollo]` warning and leaves the sections out; it never fails.
 
-To get a token: in Hollo's dashboard, create an application for the blog with the `read` and
-`write:statuses` scopes (`read` alone is enough for now) and copy its access token. The exact menu
-names may differ by Hollo version. Then add it to this repository as the GitHub secret `HOLLO_TOKEN`.
-The deploy workflow passes it to the image build as a BuildKit secret, so it is never stored in an
-image layer.
+Hollo has no token page in its dashboard; a token comes from the standard Mastodon OAuth flow, once:
+
+```sh
+H=https://social.lacalabaza.xyz
+# 1. Register the blog as an application (answers with client_id and client_secret).
+curl -s -X POST $H/api/v1/apps -d client_name=lacalabaza.xyz \
+  -d redirect_uris=urn:ietf:wg:oauth:2.0:oob -d scopes=read
+# 2. Open this in the browser, sign in to Hollo, approve, and copy the code it shows:
+#    $H/oauth/authorize?response_type=code&client_id=<client_id>&redirect_uri=urn:ietf:wg:oauth:2.0:oob&scope=read
+# 3. Trade the code for the token (answers with access_token).
+curl -s -X POST $H/oauth/token -d grant_type=authorization_code -d code=<code> \
+  -d client_id=<client_id> -d client_secret=<client_secret> \
+  -d redirect_uri=urn:ietf:wg:oauth:2.0:oob -d scope=read
+```
+
+If Hollo refuses the `oob` redirect, use `https://lacalabaza.xyz/` as `redirect_uris` and
+`redirect_uri` instead and read the `code` from the address bar after approving. Store the
+`access_token` in Bella Baxter as `HOLLO_TOKEN` in the same environment as `CARAVANA_TOKEN`; the
+workflow reads it from there and passes it to the image build as a BuildKit secret, so it is never
+stored in an image layer.
 
 The workflow also runs every 6 hours (`schedule` in `.github/workflows/deploy.yml`): it rebuilds and
 deploys so new Hollo posts and replies appear. A reply shows up at most 6 hours later, and every
@@ -95,8 +110,15 @@ Every push to `main` runs `.github/workflows/deploy.yml`: build the image, push 
 
 1. **A token in Caravana.** Settings › API tokens › "Only for one app", project `default`, app
    `lacalabaza`. Or use New app › "From a GitHub repository", which makes the token too.
-2. **A GitHub secret.** In this repository's settings add the secret `CARAVANA_TOKEN`. The console's
-   address (`https://caravana.lacalabaza.xyz`) is written in the workflow, so no variable is needed.
+2. **The token in Bella Baxter, not in GitHub.** The workflow is keyless: it has no repository
+   secrets. In Bella Baxter (tenant `code4fun-17d1c3`), the project `lacalabaza` has an environment
+   `production` with a provider attached; put the Caravana token there as the secret `CARAVANA_TOKEN`
+   (and the optional `HOLLO_TOKEN`, see [Hollo](#hollo)). Then, on that environment's Identity tab,
+   add a Trust Domain for GitHub Actions: issuer `https://token.actions.githubusercontent.com`, claim
+   rules `repository` Equals `Cosmic-Chimps/lacalabaza` and `ref` Equals `refs/heads/main`, role
+   Consumer, token TTL 15 minutes. A run from another repository or branch is refused with
+   `exchange_failed`. The scheduled and manual runs also come from `main`, so they pass. The console's
+   address (`https://caravana.lacalabaza.xyz`) is written in the workflow.
 3. **DNS before the first deploy.** Point `lacalabaza.xyz` at the Caravana host first. Without it,
    Let's Encrypt can't issue the certificate. Never give this app the domain
    `caravana.lacalabaza.xyz`: that is the console's own domain.
