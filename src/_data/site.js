@@ -24,7 +24,7 @@ export default {
     {
       name: 'Bella Baxter',
       what: "a control plane for a company's secrets, certificates & machine identities",
-      url: 'https://docs.bella-baxter.io',
+      url: 'https://bella-baxter.io',
     },
     {
       name: 'Caravana',
@@ -38,8 +38,13 @@ export default {
     },
     {
       name: 'Megafono',
-      what: ' self-hosted sidecar that handles all the ActivityPub protocol work, so your app only answers a couple of HTTP calls and receives webhooks',
+      what: 'self-hosted sidecar that handles all the ActivityPub protocol work, so your app only answers a couple of HTTP calls and receives webhooks',
       url: 'https://github.com/Cosmic-Chimps/megafono',
+    },
+    {
+      name: 'Frunchy',
+      what: 'your anime identity, in numbers Frunchy turns your Crunchyroll watch history into statistics you can share',
+      url: 'https://frunchy.lacalabaza.xyz',
     },
   ],
   // The last year of the copyright line in the footer.
