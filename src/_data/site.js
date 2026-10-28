@@ -27,30 +27,41 @@ export default {
     },
     updated: '2026-10-19',
   },
+  // Each `what` is { en, es }; a plain string is shown in both languages.
+  // TODO(jjchiw): the Spanish lines are plain translations, rewrite them in your voice.
   make: [
     {
       name: 'Bella Baxter',
-      what: "a control plane for a company's secrets, certificates & machine identities",
+      what: {
+        en: "a control plane for a company's secrets, certificates & machine identities",
+        es: 'un plano de control para los secretos, certificados e identidades de máquina de una empresa',
+      },
       url: 'https://bella-baxter.io',
     },
     {
       name: 'Caravana',
-      what: 'a self-hosted PaaS on Nomad',
+      what: { en: 'a self-hosted PaaS on Nomad', es: 'un PaaS autoalojado sobre Nomad' },
       url: 'https://github.com/Cosmic-Chimps/caravana',
     },
     {
       name: 'Umbral',
-      what: 'single sign-on for my own apps',
+      what: { en: 'single sign-on for my own apps', es: 'inicio de sesión único para mis propias apps' },
       url: 'https://github.com/Cosmic-Chimps/umbral',
     },
     {
       name: 'Megafono',
-      what: 'self-hosted sidecar that handles all the ActivityPub protocol work, so your app only answers a couple of HTTP calls and receives webhooks',
+      what: {
+        en: 'self-hosted sidecar that handles all the ActivityPub protocol work, so your app only answers a couple of HTTP calls and receives webhooks',
+        es: 'un sidecar autoalojado que se encarga de todo el protocolo ActivityPub, para que tu app solo responda un par de llamadas HTTP y reciba webhooks',
+      },
       url: 'https://github.com/Cosmic-Chimps/megafono',
     },
     {
       name: 'Frunchy',
-      what: 'your anime identity, in numbers Frunchy turns your Crunchyroll watch history into statistics you can share',
+      what: {
+        en: 'your anime identity, in numbers Frunchy turns your Crunchyroll watch history into statistics you can share',
+        es: 'tu identidad anime, en números: Frunchy convierte tu historial de Crunchyroll en estadísticas que puedes compartir',
+      },
       url: 'https://frunchy.lacalabaza.xyz',
     },
   ],

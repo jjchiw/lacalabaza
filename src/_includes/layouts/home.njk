@@ -21,7 +21,7 @@ layout: layouts/base.njk
         <div class="label"><span>{{ T.make }}</span></div>
         <ul class="make-list">
           {%- for item in site.make %}
-          <li>{% if item.url %}<a href="{{ item.url }}">{{ item.name }}</a>{% else %}<strong class="name">{{ item.name }}</strong>{% endif %}<span>{{ item.what }}</span></li>
+          <li>{% if item.url %}<a href="{{ item.url }}">{{ item.name }}</a>{% else %}<strong class="name">{{ item.name }}</strong>{% endif %}<span>{{ item.what[lang] if item.what[lang] else item.what }}</span></li>
           {%- endfor %}
         </ul>
       </section>
