@@ -57,7 +57,7 @@ header.top {
 .mark img { width: 44px; height: auto; display: block; }
 .mark small { font-family: var(--mono); font-size: 12px; font-weight: 400; color: var(--fg-2); margin-left: 4px; letter-spacing: 0; }
 .mark .xyz { color: var(--accent); font-weight: 400; }
-nav.main { display: flex; gap: 20px; font-family: var(--mono); font-size: 13px; }
+nav.main { display: flex; flex-wrap: wrap; gap: 6px 20px; font-family: var(--mono); font-size: 13px; }
 nav.main a { color: var(--fg-2); }
 nav.main a:hover { color: var(--fg); }
 
@@ -200,6 +200,11 @@ footer.bottom nav a:hover { color: var(--fg); }
 .langs a { color: var(--fg-2); }
 .langs a[aria-current] { color: var(--fg); text-decoration: underline; text-underline-offset: 4px; }
 .lg { color: var(--accent); }
+nav.main .langs { gap: 6px; }
+.tabs { font-family: var(--mono); font-size: 12px; gap: 8px; }
+.langs .soon { color: var(--fg-2); opacity: 0.65; }
+.langs span[aria-current] { text-decoration: underline; text-underline-offset: 4px; }
+.untranslated { margin: 0; padding-left: 10px; border-left: 3px solid var(--accent); font-family: var(--mono); font-size: 12px; color: var(--fg-2); }
 
 /* page: a plain reading column (privacy, terms) */
 .page-head { padding-top: 40px; max-width: 46rem; }

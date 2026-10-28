@@ -1,0 +1,11 @@
+{%- set T = t[lang] %}
+{%- set listPairs = collections.postPairs %}
+  <main class="posts" id="posts">
+    <header class="page-head">
+      <div class="crumbs"><a href="{{ T.root }}">{{ T.home }}</a><span>›</span><span>{{ T.posts }}</span></div>
+      <h1>{{ T.allPosts }}</h1>
+    </header>
+    <div class="page-body">
+      {% include "partials/post-list.njk" %}
+    </div>
+  </main>

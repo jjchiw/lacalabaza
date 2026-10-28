@@ -1,25 +1,24 @@
 ---
 layout: layouts/base.njk
 ---
-{%- if homeLang == "en" %}{% set listPosts = collections.postsEn %}
-{%- elif homeLang == "es" %}{% set listPosts = collections.postsEs %}
-{%- else %}{% set listPosts = collections.posts %}{% endif %}
+{%- set T = t[lang] %}
+{%- set listPairs = collections.postPairs %}
   <div class="cols">
 
-    <aside class="col lab" id="lab" aria-label="About">
+    <aside class="col lab" id="lab" aria-label="{{ T.lab }}">
       <section class="sec about">
-        <div class="label"><span>About</span></div>
-        <p>{{ site.about }}</p>
+        <div class="label"><span>{{ T.about }}</span></div>
+        <p>{{ site.about[lang] }}</p>
       </section>
 
       <section class="sec now">
-        <div class="label"><span>Now</span></div>
-        <p>{{ site.now.text }}</p>
-        <time datetime="{{ site.now.updated }}">updated {{ site.now.updated }}</time>
+        <div class="label"><span>{{ T.now }}</span></div>
+        <p>{{ site.now.text[lang] }}</p>
+        <time datetime="{{ site.now.updated }}">{{ T.updated }} {{ site.now.updated }}</time>
       </section>
 
       <section class="sec">
-        <div class="label"><span>Things I collaborate with</span></div>
+        <div class="label"><span>{{ T.make }}</span></div>
         <ul class="make-list">
           {%- for item in site.make %}
           <li>{% if item.url %}<a href="{{ item.url }}">{{ item.name }}</a>{% else %}<strong class="name">{{ item.name }}</strong>{% endif %}<span>{{ item.what }}</span></li>
@@ -30,20 +29,20 @@ layout: layouts/base.njk
 
     <main class="col posts" id="posts">
       <section class="sec intro">
-        <h1>Notes from the <em>pumpkin</em>.</h1>
-        <p>What I'm building, in English. Everything else, en español.</p>
+        <h1>{{ T.headline | safe }}</h1>
+        <p>{{ T.tagline }}</p>
       </section>
 
       <section class="sec">
-        <div class="label"><span>Writing</span><nav class="langs" aria-label="Language"><a href="/"{% if homeLang == "all" %} aria-current="true"{% endif %}>All</a><a href="/en/"{% if homeLang == "en" %} aria-current="true"{% endif %}>English</a><a href="/es/"{% if homeLang == "es" %} aria-current="true"{% endif %}>Español</a></nav></div>
+        <div class="label"><span>{{ T.writing }}</span></div>
         {% include "partials/post-list.njk" %}
-        <div class="posts-foot"><a href="/posts/">All posts →</a></div>
+        <div class="posts-foot"><a href="{{ T.root }}posts/">{{ T.allPostsLink }}</a></div>
       </section>
     </main>
 
-    <aside class="col elsewhere" id="elsewhere" aria-label="Where else to find me">
+    <aside class="col elsewhere" id="elsewhere" aria-label="{{ T.elsewhereAria }}">
       <section class="sec">
-        <div class="label"><span>Elsewhere</span></div>
+        <div class="label"><span>{{ T.elsewhere }}</span></div>
         <ul class="out-list">
           {%- if site.hollo %}
           <li><span class="k"><a href="{{ site.hollo }}" rel="me">Hollo</a></span><span class="h">@{{ site.author }}</span></li>
@@ -60,11 +59,11 @@ layout: layouts/base.njk
 
       {%- if hollo and hollo.length %}
       <section class="sec">
-        <div class="label"><span>Latest from Hollo</span><a href="{{ site.hollo }}">more</a></div>
+        <div class="label"><span>{{ T.latestHollo }}</span><a href="{{ site.hollo }}">{{ T.more }}</a></div>
         {%- for toot in hollo %}
         <div class="toot">
           {{ toot.content | safe }}
-          <div class="meta"><a href="{{ site.hollo }}">@{{ site.author }}</a><a href="{{ toot.url }}"><time datetime="{{ toot.published }}">{{ toot.published | dateFormat("en") }}</time></a></div>
+          <div class="meta"><a href="{{ site.hollo }}">@{{ site.author }}</a><a href="{{ toot.url }}"><time datetime="{{ toot.published }}">{{ toot.published | dateFormat(lang) }}</time></a></div>
         </div>
         {%- endfor %}
       </section>

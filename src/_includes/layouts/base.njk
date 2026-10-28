@@ -1,14 +1,23 @@
+{%- set T = t[lang] -%}
+{#- lang is the language of the page's own words (the chrome); contentLang, when set, is the
+    language of the text it shows (a post not yet translated shows the other language). -#}
+{%- set htmlLang = contentLang or lang -%}
+{%- set alt = page.url | altUrls(pairKey) -%}
 <!doctype html>
-<html lang="en">
+<html lang="{{ htmlLang }}">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>{% if title and page.url != "/" %}{{ title }} · {{ site.name }}{% else %}{{ site.name }}.xyz · {{ site.author }}{% endif %}</title>
-  <meta name="description" content="{{ description or site.about }}">
+  <title>{% if title and page.url != T.root %}{{ title }} · {{ site.name }}{% else %}{{ site.name }}.xyz · {{ site.author }}{% endif %}</title>
+  <meta name="description" content="{{ description or site.about[lang] }}">
   <link rel="canonical" href="{{ site.url }}{{ page.url }}">
+  {%- if alt.en != alt.es %}
+  <link rel="alternate" hreflang="en" href="{{ site.url }}{{ alt.en }}">
+  <link rel="alternate" hreflang="es" href="{{ site.url }}{{ alt.es }}">
+  <link rel="alternate" hreflang="x-default" href="{{ site.url }}{{ alt.en }}">
+  {%- endif %}
   <link rel="icon" type="image/png" href="/img/calabaza.png">
-  <link rel="alternate" type="application/atom+xml" title="{{ site.name }}, all posts" href="/feed.xml">
-  <link rel="alternate" type="application/atom+xml" title="{{ site.name }}, English" href="/en/feed.xml">
+  <link rel="alternate" type="application/atom+xml" title="{{ site.name }}, English" href="/feed.xml">
   <link rel="alternate" type="application/atom+xml" title="{{ site.name }}, Español" href="/es/feed.xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -17,21 +26,27 @@
 </head>
 <body>
 <div class="wrap">
-  <header class="top">
-    <a class="mark" href="/"><img src="/img/calabaza.png" width="356" height="336" alt="a grinning pumpkin"><span>{{ site.name }}<span class="xyz">.xyz</span></span></a>
-    <nav class="main" aria-label="Sections">
-      <!--<a href="/#posts">Writing</a>
-      <a href="/#lab">About</a>
-      <a href="/#elsewhere">Elsewhere</a> -->
-      <a href="/feed.xml">RSS</a>
+  <header class="top"{% if lang != htmlLang %} lang="{{ lang }}"{% endif %}>
+    <a class="mark" href="{{ T.root }}"><img src="/img/calabaza.png" width="356" height="336" alt="{{ T.mascot }}"><span>{{ site.name }}<span class="xyz">.xyz</span></span></a>
+    <nav class="main" aria-label="{{ T.nav }}">
+      <a href="{{ T.root }}#posts">{{ T.writing }}</a>
+      <a href="{{ T.root }}#lab">{{ T.about }}</a>
+      <a href="{{ T.root }}#elsewhere">{{ T.elsewhere }}</a>
+      <a href="{{ T.feed }}">{{ T.rss }}</a>
+      <span class="langs" role="group" aria-label="{{ T.language }}">
+        {%- for l in ["en", "es"] %}
+        {%- if loop.index0 %}<span aria-hidden="true">·</span>{% endif %}
+        <a href="{{ alt[l] }}" hreflang="{{ l }}" lang="{{ l }}"{% if l == lang %} aria-current="page"{% endif %}>{{ t.langs[l].short }}</a>
+        {%- endfor %}
+      </span>
     </nav>
   </header>
 
 {{ content | safe }}
 
-  <footer class="bottom">
-    <span>Eleventy · hosted on Caravana · <a href="{{ site.repo }}">source</a></span>
-    <nav aria-label="Legal"><a href="/privacy/">Privacy policy</a><a href="/terms/">Terms of service</a></nav>
+  <footer class="bottom"{% if lang != htmlLang %} lang="{{ lang }}"{% endif %}>
+    <span>Eleventy · hosted on Caravana · <a href="{{ site.repo }}">{{ T.source | lower }}</a></span>
+    <nav aria-label="{{ T.legal }}"><a href="/privacy/">{{ T.privacy }}</a><a href="/terms/">{{ T.terms }}</a></nav>
     <span>{{ site.name }}.xyz · {{ site.author }} · 2013–{{ site.year }}</span>
   </footer>
 </div>

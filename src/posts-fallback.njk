@@ -1,0 +1,35 @@
+---js
+{
+  layout: "layouts/base.njk",
+  // One page per post that lacks a language: the missing language's URL shows the
+  // existing language's text, marked as not translated.
+  pagination: { data: "collections.postFallbacks", size: 1, alias: "pair" },
+  eleventyExcludeFromCollections: true,
+  eleventyComputed: {
+    permalink: (data) => data.pair.url,
+    // The page's own words are in the missing language, its text in the other one.
+    lang: (data) => data.pair.missing,
+    contentLang: (data) => data.pair.shown,
+    pairKey: (data) => data.pair.key,
+    title: (data) => data.pair[data.pair.shown].data.title,
+    description: (data) => data.pair[data.pair.shown].data.description,
+  },
+}
+---
+{%- set item = pair[pair.shown] %}
+{%- set post = {
+  url: page.url,
+  lang: pair.shown,
+  title: item.data.title,
+  description: item.data.description,
+  content: item.templateContent,
+  date: item.date,
+  tags: item.data.tags,
+  updated: item.data.updated,
+  fediverse: item.data.fediverse,
+  comments: item.data.comments,
+  draft: item.data.draft,
+  source: item.inputPath,
+  pair: pair
+} %}
+{% include "partials/post-page.njk" %}

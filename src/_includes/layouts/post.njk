@@ -1,75 +1,28 @@
 ---
 layout: layouts/base.njk
 ---
-{%- set older = collections.posts | getNextCollectionItem(page) %}
-{%- set newer = collections.posts | getPreviousCollectionItem(page) %}
-{%- set toc = content | headings %}
-  <article lang="{{ lang }}">
-    <header class="post-head">
-      <div class="crumbs"><a href="/#posts">Writing</a><span>›</span><span>{{ page.date.getUTCFullYear() }}</span></div>
-      <h1>{{ title }}{% if draft %} <span class="draft-mark">Draft</span>{% endif %}</h1>
-      <p class="stand">{{ description }}</p>
-      <div class="pmeta"><time datetime="{{ page.date | isoDate }}">{{ page.date | dateFormat(lang) }}</time><span class="lg">{{ lang }}</span><span>{{ content | readingTime(lang) }}</span>{% if tags %}<span>{% for tag in tags %}<span class="tag">{{ tag }}</span> {% endfor %}</span>{% endif %}{% if updated %}<span>{{ "updated" if lang == "en" else "actualizado" }} {{ updated | dateFormat(lang) }}</span>{% endif %}</div>
-    </header>
-
-    <div class="post-grid">
-      <div class="prose">
-{{ content | safe }}
-      </div>
-
-      <aside class="rail">
-        {%- if toc.length %}
-        <section class="sec toc">
-          <div class="label"><span>On this page</span></div>
-          <ol>
-            {%- for h in toc %}
-            <li><a href="#{{ h.id }}">{{ h.text }}</a></li>
-            {%- endfor %}
-          </ol>
-        </section>
-        {%- endif %}
-        <section class="sec">
-          <div class="label"><span>This post</span></div>
-          <ul class="out-list">
-            {%- if fediverse or site.hollo %}
-            <li><span class="k">Reply</span><span class="h"><a href="{{ fediverse or site.hollo }}">on Hollo</a></span></li>
-            {%- endif %}
-            <li><span class="k">Source</span><span class="h"><a href="{{ site.repo }}/blob/main/{{ page.inputPath | replace('./', '') }}">edit on GitHub</a></span></li>
-          </ul>
-        </section>
-      </aside>
-    </div>
-
-    {%- if site.hollo or fediverse %}
-    <section class="sec replies" id="replies" aria-label="Replies">
-      <div class="label"><span>Replies</span>{% if comments.length %}<span>{{ comments.length }} {{ "reply" if comments.length == 1 else "replies" }}</span>{% endif %}</div>
-      <p class="note">Replies go through the fediverse. <a href="{{ fediverse or site.hollo }}">Reply on Hollo</a></p>
-      {%- if comments.length %}
-      <ul class="reply-list">
-        {%- for c in comments %}
-        <li class="reply">
-          <div class="who">
-            {%- if c.author.avatar %}<img class="avatar" src="{{ c.author.avatar }}" width="28" height="28" loading="lazy" alt="">{% endif %}
-            <span class="name">{% if c.author.url %}<a href="{{ c.author.url }}" rel="nofollow noopener">{{ c.author.name }}</a>{% else %}{{ c.author.name }}{% endif %}</span>
-            <span class="acct">@{{ c.author.acct }}</span>
-            <a class="when" href="{{ c.url }}" rel="nofollow noopener"><time datetime="{{ c.createdAt }}">{{ c.createdAt | dateFormat(lang) }}</time></a>
-          </div>
-          <div class="body">{{ c.content | safe }}</div>
-        </li>
-        {%- endfor %}
-      </ul>
-      {%- endif %}
-    </section>
-    {%- endif %}
-
-    <footer class="post-end">
-      <nav class="pager" aria-label="Posts">
-        {%- if older %}
-        <a href="{{ older.url }}" class="prev"><span class="dir">← Older</span><span>{{ older.data.title }}</span></a>
-        {%- endif %}
-        {%- if newer %}
-        <a href="{{ newer.url }}" class="next"><span class="dir">Newer →</span><span>{{ newer.data.title }}</span></a>
-        {%- endif %}
-      </nav>
-    </footer>
-  </article>
+{#- A real post file (either language). It hands its data to the shared partial; a post
+    with no fediverse toot of its own borrows the other language's toot and replies. -#}
+{%- set pair = collections.postPairs | pairOf(pairKey) %}
+{%- set sibling = pair["es" if lang == "en" else "en"] if pair else null %}
+{%- if fediverse or not sibling %}
+{%- set fediverseUrl = fediverse %}{% set replyList = comments %}
+{%- else %}
+{%- set fediverseUrl = sibling.data.fediverse %}{% set replyList = sibling.data.comments %}
+{%- endif %}
+{%- set post = {
+  url: page.url,
+  lang: lang,
+  title: title,
+  description: description,
+  content: content,
+  date: page.date,
+  tags: tags,
+  updated: updated,
+  fediverse: fediverseUrl,
+  comments: replyList,
+  draft: draft,
+  source: page.inputPath,
+  pair: pair
+} %}
+{% include "partials/post-page.njk" %}

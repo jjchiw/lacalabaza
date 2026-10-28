@@ -1,17 +1,9 @@
 ---
 layout: layouts/base.njk
+lang: en
 title: All posts
 description: Every post on lacalabaza.xyz, newest first.
 permalink: /posts/
 eleventyExcludeFromCollections: true
 ---
-{%- set listPosts = collections.posts %}
-  <main class="posts" id="posts">
-    <header class="page-head">
-      <div class="crumbs"><a href="/">Home</a><span>›</span><span>Posts</span></div>
-      <h1>All posts</h1>
-    </header>
-    <div class="page-body">
-      {% include "partials/post-list.njk" %}
-    </div>
-  </main>
+{%- include "partials/posts-page.njk" %}
