@@ -1,5 +1,6 @@
 import rssPlugin from "@11ty/eleventy-plugin-rss";
 import syntaxHighlight from "@11ty/eleventy-plugin-syntaxhighlight";
+import path from "node:path";
 import markdownItAnchor from "markdown-it-anchor";
 import { alternates, postPairs, postFallbacks, postUrls } from "./src/_lib/posts.js";
 
@@ -46,6 +47,26 @@ export default function (eleventyConfig) {
 
   eleventyConfig.addPassthroughCopy("src/css");
   eleventyConfig.addPassthroughCopy("src/img");
+  // Images kept next to the posts (src/posts/<year>/img/x.png) are published at
+  // /posts/<year>/img/x.png.
+  eleventyConfig.addPassthroughCopy("src/posts/**/*.{png,jpg,jpeg,gif,webp,svg,avif}");
+
+  // A post may reference an image relative to its own file, as an editor writes
+  // it: ![a caption](img/photo.png). The page's URL is /posts/<year>/<slug>/ (or
+  // under /es/), so a relative path would point at the wrong place. Rewrite it,
+  // before rendering, to the absolute URL of where the file is published:
+  // src/posts/2026/img/photo.png -> /posts/2026/img/photo.png.
+  eleventyConfig.addPreprocessor("relative-images", "md", (data, content) => {
+    const dir = path.posix.dirname(data.page.inputPath.replace(/^\.\//, ""));
+    const base = dir.replace(/^src(\/|$)/, "/");
+    const absolute = (src) => {
+      if (/^(\/|[a-z]+:|#|data:)/i.test(src)) return src;
+      return path.posix.normalize(path.posix.join(base, src));
+    };
+    return content
+      .replace(/(!\[[^\]]*\]\()([^)\s]+)/g, (m, open, src) => open + absolute(src))
+      .replace(/(<img\b[^>]*\ssrc=")([^"]+)/g, (m, open, src) => open + absolute(src));
+  });
 
   // Every post file, both languages, newest first.
   const posts = (api) =>

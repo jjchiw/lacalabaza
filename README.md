@@ -76,6 +76,19 @@ The text, in Markdown. Each `##` heading gets an anchor and an entry in "On this
 - Site-wide text and links (About, Now, Things I make, Elsewhere) live in `src/_data/site.js`. Fill in
   `x` there when the profile exists: until then that link is left out.
 
+## Images in a post
+
+Keep a post's images next to it, in `src/posts/<year>/img/`, and reference them relative to the
+file, the way an editor writes them when you paste an image:
+
+```markdown
+![A caption](img/photo.png)
+```
+
+The build rewrites the path to where the file is published (`/posts/<year>/img/photo.png`) for both
+languages and copies the image. Absolute paths (`/img/...`) and full URLs are left as they are. In
+Zettlr or MarkText, set the image folder to `img` relative to the current file.
+
 ## Hollo
 
 The site reads the fediverse account (`site.hollo`, `site.holloApi` and `site.holloHandle` in
