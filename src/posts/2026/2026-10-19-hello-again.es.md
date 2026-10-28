@@ -2,7 +2,6 @@
 layout: layouts/post.njk
 title: Volver a escribir, trece años después
 description: Lo que quedó del sitio de 2013.
-lang: es
 draft: true
 tags:
   - personal

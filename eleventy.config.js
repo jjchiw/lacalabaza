@@ -1,6 +1,7 @@
 import rssPlugin from "@11ty/eleventy-plugin-rss";
 import syntaxHighlight from "@11ty/eleventy-plugin-syntaxhighlight";
 import markdownItAnchor from "markdown-it-anchor";
+import { alternates, postPairs, postFallbacks, postUrls } from "./src/_lib/posts.js";
 
 const LOCALES = { en: "en-US", es: "es-MX" };
 
@@ -46,18 +47,28 @@ export default function (eleventyConfig) {
   eleventyConfig.addPassthroughCopy("src/css");
   eleventyConfig.addPassthroughCopy("src/img");
 
-  // Posts, newest first. Templates reverse the order where they need to.
+  // Every post file, both languages, newest first.
   const posts = (api) =>
     api
       .getFilteredByGlob("src/posts/**/*.md")
       .sort((a, b) => b.date - a.date || a.inputPath.localeCompare(b.inputPath));
   eleventyConfig.addCollection("posts", posts);
-  eleventyConfig.addCollection("postsEn", (api) =>
-    posts(api).filter((p) => p.data.lang === "en")
-  );
-  eleventyConfig.addCollection("postsEs", (api) =>
-    posts(api).filter((p) => p.data.lang === "es")
-  );
+  // One object per post: { key, year, date, en, es }, newest first. en and es are
+  // collection items, or null when that language has no file.
+  eleventyConfig.addCollection("postPairs", (api) => postPairs(posts(api)));
+  // The pairs with one language missing: posts-fallback.njk paginates them to give
+  // the missing language's URL the other language's content.
+  eleventyConfig.addCollection("postFallbacks", (api) => postFallbacks(postPairs(posts(api))));
+
+  eleventyConfig.addFilter("pairOf", (pairs, key) => pairs.find((p) => p.key === key) || null);
+  // { older, newer } pairs around a key (the list is newest first).
+  eleventyConfig.addFilter("neighbors", (pairs, key) => {
+    const i = pairs.findIndex((p) => p.key === key);
+    return { older: i >= 0 ? pairs[i + 1] || null : null, newer: i > 0 ? pairs[i - 1] : null };
+  });
+  eleventyConfig.addFilter("postUrls", postUrls);
+  // The page's URL in each language: { en, es }.
+  eleventyConfig.addFilter("altUrls", alternates);
 
   eleventyConfig.addFilter("dateFormat", formatDate);
   eleventyConfig.addFilter("isoDate", (date) =>

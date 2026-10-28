@@ -1,5 +1,6 @@
 import site from "../_data/site.js";
 import { cleanHtml } from "../_lib/sanitize.js";
+import { langOf, pairKeyOf, postUrl } from "../_lib/posts.js";
 
 // Replies to the toot named in a post's `fediverse` front matter, read at build
 // time with a read-only Hollo token. Without the token, or on any error, a post
@@ -44,9 +45,14 @@ async function fetchComments(id, token) {
 
 export default {
   eleventyComputed: {
-    // /posts/<year>/<slug>/ : the year and the slug come from the file name
-    // (yyyy-mm-dd-slug.md), through page.date and page.fileSlug.
-    permalink: (data) => `/posts/${data.page.date.getUTCFullYear()}/${data.page.fileSlug}/`,
+    // The language comes from the file name: x.es.md is Spanish, x.md English.
+    lang: (data) => langOf(data.page.inputPath),
+    // yyyy-mm-dd-slug[.es].md -> slug. The two files of a post share a pairKey.
+    slug: (data) => pairKeyOf(data.page.date.getUTCFullYear(), data.page.inputPath).split("/")[1],
+    pairKey: (data) => pairKeyOf(data.page.date.getUTCFullYear(), data.page.inputPath),
+    // /posts/<year>/<slug>/ for English, /es/posts/<year>/<slug>/ for Spanish.
+    permalink: (data) =>
+      postUrl(pairKeyOf(data.page.date.getUTCFullYear(), data.page.inputPath), langOf(data.page.inputPath)),
     comments: async (data) => {
       if (!data.fediverse) return [];
       const token = process.env.HOLLO_TOKEN;
