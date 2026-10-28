@@ -38,12 +38,18 @@ export default {
     },
     {
       name: 'Caravana',
-      what: { en: 'a self-hosted PaaS on Nomad', es: 'un PaaS autoalojado sobre Nomad' },
+      what: {
+        en: 'a self-hosted PaaS on Nomad',
+        es: 'un PaaS autoalojado sobre Nomad',
+      },
       url: 'https://github.com/Cosmic-Chimps/caravana',
     },
     {
       name: 'Umbral',
-      what: { en: 'single sign-on for my own apps', es: 'inicio de sesión único para mis propias apps' },
+      what: {
+        en: 'single sign-on for my your apps',
+        es: 'inicio de sesión único para tus apps',
+      },
       url: 'https://github.com/Cosmic-Chimps/umbral',
     },
     {
