@@ -1,18 +1,19 @@
 // Helpers shared by the Eleventy config and the posts' data file.
-// A post is a pair of files: yyyy-mm-dd-slug.md (English) and
-// yyyy-mm-dd-slug.es.md (Spanish). Both languages always have a URL.
+// A post is a pair of files: yyyy-mm-dd-slug.en.md (English; the bare
+// yyyy-mm-dd-slug.md is English too) and yyyy-mm-dd-slug.es.md (Spanish).
+// Both languages always have a URL.
 
 export function langOf(inputPath) {
   return String(inputPath).endsWith(".es.md") ? "es" : "en";
 }
 
 // "./src/posts/2026/2026-10-20-first.es.md" -> "first"
-// Derived from the path on purpose: page.fileSlug would keep ".es".
+// Derived from the path on purpose: page.fileSlug would keep ".es" or ".en".
 export function slugOf(inputPath) {
   const file = String(inputPath).split("/").pop();
   return file
     .replace(/\.md$/, "")
-    .replace(/\.es$/, "")
+    .replace(/\.(en|es)$/, "")
     .replace(/^\d{4}-\d{2}-\d{2}-/, "");
 }
 

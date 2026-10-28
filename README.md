@@ -34,10 +34,11 @@ language; the About and Now texts are in `src/_data/site.js` as `{ en, es }`.
 ## Write a post
 
 A post is a pair of Markdown files side by side, one per language, named
-`src/posts/<year>/yyyy-mm-dd-<slug>.md` (English) and `src/posts/<year>/yyyy-mm-dd-<slug>.es.md`
-(Spanish). The file name carries the date and the slug: `src/posts/2026/2026-10-19-hello-again.md` is
-published on 19 Oct 2026 at `/posts/2026/hello-again/`, and its Spanish file
-`2026-10-19-hello-again.es.md` at `/es/posts/2026/hello-again/`. Eleventy reads the date from the file
+`src/posts/<year>/yyyy-mm-dd-<slug>.en.md` (English) and `src/posts/<year>/yyyy-mm-dd-<slug>.es.md`
+(Spanish; a bare `yyyy-mm-dd-<slug>.md` counts as English too). The file name carries the date and
+the slug: `src/posts/2026/2026-10-19-hello-again.en.md` is published on 19 Oct 2026 at
+`/posts/2026/hello-again/`, and its Spanish file `2026-10-19-hello-again.es.md` at
+`/es/posts/2026/hello-again/`. Eleventy reads the date from the file
 name, so the front matter has no `date:`. The year folders are only for tidiness: the URLs and the date
 come from the file names alone. The two files of a pair share the folder year and the slug (and so the
 date).
